@@ -17,7 +17,7 @@ public class DrawBarChart {
 	
 	static int count = 0;
 	static double percent;
-	private static Stage stagestore;
+	static Stage stagestore;
 	
     public static void drawChart(){
     	

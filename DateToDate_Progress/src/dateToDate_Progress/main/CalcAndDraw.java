@@ -17,7 +17,16 @@ public class CalcAndDraw {
 			
 			new DrawBarChart().main(resultPercent);
 			
-			Thread.sleep(fileDate.getSeconds() * 1000);
+			int seconds = fileDate.getSeconds();
+			
+			for(int i = 0; i < seconds;i++){
+				if(DrawBarChart.stagestore != null &&  DrawBarChart.stagestore.isShowing() == false)
+					break;
+				Thread.sleep(1000);
+			}
+			
+			if(DrawBarChart.stagestore.isShowing() == false)
+				break;
 		}
 	}
 }
