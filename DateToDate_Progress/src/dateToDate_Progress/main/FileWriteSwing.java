@@ -68,6 +68,7 @@ public class FileWriteSwing extends JPanel implements ActionListener {
 			refreshTimeText = new JTextField(20);
 			
 			accept.addActionListener(this);
+			preview.addActionListener(this);
 			decline.addActionListener(this);
 			
 			JPanel Data = new JPanel(new GridLayout(6, 2));
@@ -85,8 +86,9 @@ public class FileWriteSwing extends JPanel implements ActionListener {
 			Data.add(new JLabel("            "));
 			
 			
-			JPanel Buttons = new JPanel(new GridLayout(1, 2));
+			JPanel Buttons = new JPanel(new GridLayout(1, 3));
 			Buttons.add(accept);
+			Buttons.add(preview);
 			Buttons.add(decline);
 
 			add(Data, BorderLayout.NORTH);
@@ -125,7 +127,12 @@ public class FileWriteSwing extends JPanel implements ActionListener {
 			}
 			else if(Action.equals("PREVIEW")){
 				saveInFileDate();
-				
+				try {
+					new CalcAndDraw().main(fileDate);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 		}
 			else if(Action.equals("DECLINE")){
 				frame.dispose();
