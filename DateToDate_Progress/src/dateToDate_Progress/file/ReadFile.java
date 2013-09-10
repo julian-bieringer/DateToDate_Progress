@@ -15,7 +15,8 @@ public class ReadFile {
 		final ObjectMapper mapper = new ObjectMapper();
 		FileDate fileDate = new FileDate();
 
-		String s = "C:\\Users\\ThinkpadT420\\Documents\\dateToDate_Progress";
+		String user = System.getProperty("user.name");
+		String s = user.format("C:\\Users\\%s\\Documents\\dateToDate_Progress", user);
 		s = s.replace("\\", "/");
 		String path = String.format("%s/%s", s, fileName);
 		File f = new File(path);

@@ -13,7 +13,8 @@ public class WriteFile {
 	public static void main(FileDate fileDate) throws IOException {
 		final ObjectMapper mapper = new ObjectMapper();
 
-		String s = "C:\\Users\\ThinkpadT420\\Documents";
+		String user = System.getProperty("user.name");
+		String s = user.format("C:\\Users\\%s\\Documents", user);
 		s = s.replace("\\", "/");
 
 		File dir = new File(String.format(("%s/dateToDate_Progress"), s));
