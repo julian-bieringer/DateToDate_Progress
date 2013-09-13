@@ -4,10 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,14 +25,15 @@ import dateToDate_Progress.file.ReadFile;
 
 public class FileNameSwing extends JPanel implements ActionListener{
 	
+	static List<FileCheckbox> fileCheckBoxList = new ArrayList<FileCheckbox>();
 	static JFrame frame;
-	JLabel fileName;
-	JTextField fileNameText;
 	JButton accept;
 	JButton decline;
 	
 	public FileNameSwing() {
 		super(new BorderLayout());
+		
+		getFileNames();
 		
 		accept = new JButton("   accept   ");
 		accept.setActionCommand("ACCEPT");
@@ -36,16 +41,14 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		decline = new JButton("   decline   ");
 		decline.setActionCommand("DECLINE");
 		
-		fileName = new JLabel("file name   ");
-		
-		fileNameText = new JTextField(20);
-		
 		accept.addActionListener(this);
 		decline.addActionListener(this);
 		
-		JPanel Text = new JPanel(new GridLayout(2,2));
-		Text.add(fileName);
-		Text.add(fileNameText);
+		JPanel Text = new JPanel(new GridLayout(fileCheckBoxList.size() + 2, 2));
+		for(int i = 0; i < fileCheckBoxList.size();i++){
+			Text.add(new JLabel(fileCheckBoxList.get(i).getFileName()));
+			Text.add(fileCheckBoxList.get(i).getCheckBox());
+		}
 		Text.add(new JLabel());
 		Text.add(new JLabel());
 		
@@ -75,14 +78,17 @@ public class FileNameSwing extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent e) {
 		String Action = e.getActionCommand();
-		
 		if(Action.equals("ACCEPT")){
 			try {
-				FileDate fileDate = new ReadFile().main(fileNameText.getText());
+				FileDate fileDate = new FileDate();
+				try {
+					fileDate = new ReadFile().main(getFileName());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				MainSwing.fileDate = fileDate;
 				new CalcAndDraw().main(fileDate);
-			} catch (IOException e1) {
-				e1.printStackTrace();
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -91,6 +97,30 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		else if(Action.equals("DECLINE")){
 			frame.dispose();
 		}		
+	}
+	private String getFileName() {
+		for(int i = 0; i < fileCheckBoxList.size();i++){
+			if(fileCheckBoxList.get(i).getCheckBox().isSelected() == true)
+				return fileCheckBoxList.get(i).getFileName();
+		}
+		return null;
+	}
+	private void getFileNames() {
+		String user = System.getProperty("user.name");
+		String s = user.format("C:\\Users\\%s\\Documents\\dateToDate_Progress", user);
+		s = s.replace("\\", "/");
+		File folder = new File(s);
+		File[] listOfFiles = folder.listFiles();
+
+		for (File file : listOfFiles) {
+		    if (file.isFile()) {
+		      FileCheckbox fileCheckbox = new FileCheckbox();
+		      fileCheckbox.setFileName(file.getName());
+		      fileCheckbox.setCheckBox(new JCheckBox());
+		      fileCheckBoxList.add(fileCheckbox);
+		    }
+		}
+		
 	}
 	public static void main() {		
 		// Schedule a job for the event-dispatching thread:
