@@ -7,7 +7,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -128,7 +130,9 @@ public class FileWriteSwing extends JPanel implements ActionListener {
 			else if(Action.equals("PREVIEW")){
 				saveInFileDate();
 				try {
-					new CalcAndDraw().main(fileDate);
+					List<FileDate> fileDates = new ArrayList<FileDate>();
+					fileDates.add(fileDate);
+					new CalcAndDraw().main(fileDates);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

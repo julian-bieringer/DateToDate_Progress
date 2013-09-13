@@ -1,23 +1,24 @@
 package dateToDate_Progress.main;
 
 import java.util.Date;
+import java.util.List;
 
 public class CalcAndDraw {
-
-	static FileDate fileDate;
 	
-	public static void main(FileDate fileDate) throws InterruptedException {
+	public static void main(List<FileDate> fileDates) throws InterruptedException {
+	int seconds = fileDates.get(0).getSeconds();
+	DrawBarChart.count = 0;
 		while(true){
-			CalcAndDraw.fileDate = fileDate;
-		
-			int dayDifference = (int) ((fileDate.getEnd().getTime() - fileDate.getStart().getTime())/86400000);
-			Date now = new Date();
-			double spanToNow = (now.getTime() - fileDate.getStart().getTime())/86400000.0;
-			double resultPercent = spanToNow/dayDifference;
 			
-			new DrawBarChart().main(resultPercent);
+			for(int i = 0; i < fileDates.size();i++){
+				int dayDifference = (int) ((fileDates.get(i).getEnd().getTime() - fileDates.get(i).getStart().getTime())/86400000);
+				Date now = new Date();
+				double spanToNow = (now.getTime() - fileDates.get(i).getStart().getTime())/86400000.0;
+				fileDates.get(i).setPercent(spanToNow/dayDifference);
+			}
 			
-			int seconds = fileDate.getSeconds();
+			new DrawBarChart().main(fileDates);
+			
 			
 			for(int i = 0; i < seconds;i++){
 				if(DrawBarChart.stagestore != null &&  DrawBarChart.stagestore.isShowing() == false)

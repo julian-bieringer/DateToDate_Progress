@@ -1,5 +1,7 @@
 package dateToDate_Progress.main;
 
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
@@ -16,13 +18,19 @@ import javafx.stage.Stage;
 public class DrawBarChart {
 	
 	static int count = 0;
-	static double percent;
+	static List<FileDate> fileDates;
 	static Stage stagestore;
 	
     public static void drawChart(){
     	
     	String part = "% are already done";
-    	String title = part.format("%s%s at file %s", percent*100, part, CalcAndDraw.fileDate.getFileName());
+    	String title;
+		double twoDecimals = Double.valueOf(Math.round((fileDates.get(0).getPercent())*1000)/100.0);
+		
+    	if(fileDates.size() == 1)
+    		title = part.format("%s%s at file %s", twoDecimals*100, part, fileDates.get(0).getFileName());
+    	else
+    		title = "several files are selected";
     	
 		final NumberAxis xAxis = new NumberAxis();
 		xAxis.setAutoRanging(false);
@@ -34,8 +42,14 @@ public class DrawBarChart {
         
         
         final XYChart.Series series = new XYChart.Series(); 
-        series.getData().add(new XYChart.Data(100.0, "full amount of time"));
-        series.getData().add(new XYChart.Data(percent*100, "already done"));
+        for(int i = 0; i < fileDates.size();i++){
+	        series.getData().add(new XYChart.Data(100.0, "full amount of time"));
+	        twoDecimals = Double.valueOf(Math.round((fileDates.get(i).getPercent())*100)/100.0);
+	        if(fileDates.size() >= 2)
+	        	series.getData().add(new XYChart.Data(fileDates.get(i).getPercent()*100, String.format("already done [%s], %s%s", fileDates.get(i).getFileName(), twoDecimals * 100, "%")));
+	        else 
+	        	series.getData().add(new XYChart.Data(fileDates.get(i).getPercent()*100, "already done"));
+        }
         
         
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -70,9 +84,27 @@ public class DrawBarChart {
 			}
 		});
     }
-    public static void main(double percent){
-    	DrawBarChart.percent = percent;
+    public static void main(List<FileDate> fileDates){
+    	DrawBarChart.fileDates = fileDates;
+    	sortList();
     	drawChart();
     }
+	private static void sortList() {
+		boolean exchange = false;
+		int length = fileDates.size();
+		do{
+			exchange = false;
+			length--;
+			for(int i = 0; i < length;i++){
+				if(fileDates.get(i).getPercent() < fileDates.get(i+1).getPercent()){
+					FileDate tmp = fileDates.get(i);
+					fileDates.set(i, fileDates.get(i+1));
+					fileDates.set(i+1, tmp);
+					exchange = true;
+				}
+			}
+		}while(exchange == true);
+		
+	}
 }
 

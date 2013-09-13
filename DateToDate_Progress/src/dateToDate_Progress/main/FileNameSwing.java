@@ -33,6 +33,7 @@ public class FileNameSwing extends JPanel implements ActionListener{
 	public FileNameSwing() {
 		super(new BorderLayout());
 		
+		if(fileCheckBoxList.size() <= 0)
 		getFileNames();
 		
 		accept = new JButton("   accept   ");
@@ -79,16 +80,18 @@ public class FileNameSwing extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String Action = e.getActionCommand();
 		if(Action.equals("ACCEPT")){
+			List<String> fileNames = getFileName();
+			List<FileDate> fileDates = new ArrayList<FileDate>();
 			try {
-				FileDate fileDate = new FileDate();
 				try {
-					fileDate = new ReadFile().main(getFileName());
+					for(int i = 0; i < fileNames.size();i++){
+						fileDates.add(new ReadFile().main(fileNames.get(i)));
+					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				MainSwing.fileDate = fileDate;
-				new CalcAndDraw().main(fileDate);
+				new CalcAndDraw().main(fileDates);
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -98,12 +101,14 @@ public class FileNameSwing extends JPanel implements ActionListener{
 			frame.dispose();
 		}		
 	}
-	private String getFileName() {
+	private  List<String> getFileName() {
+		List<String> fileNames = new ArrayList<String>();
+		
 		for(int i = 0; i < fileCheckBoxList.size();i++){
 			if(fileCheckBoxList.get(i).getCheckBox().isSelected() == true)
-				return fileCheckBoxList.get(i).getFileName();
+				fileNames.add(fileCheckBoxList.get(i).getFileName());
 		}
-		return null;
+		return fileNames;
 	}
 	private void getFileNames() {
 		String user = System.getProperty("user.name");

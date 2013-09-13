@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class FileDate {
 
+	private double percent;
 	private Date start;
 	private Date end;
 	private int seconds;
@@ -32,6 +33,12 @@ public class FileDate {
 	}
 	public void setSeconds(int seconds) {
 		this.seconds = seconds;
+	}
+	public double getPercent() {
+		return percent;
+	}
+	public void setPercent(double percent) {
+		this.percent = percent;
 	}
 	
 }
