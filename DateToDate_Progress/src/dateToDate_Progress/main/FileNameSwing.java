@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,8 @@ public class FileNameSwing extends JPanel implements ActionListener{
 	
 	static List<FileCheckbox> fileCheckBoxList = new ArrayList<FileCheckbox>();
 	static JFrame frame;
+	JButton selectAll;
+	JButton deselectAll;
 	JButton accept;
 	JButton decline;
 	
@@ -36,29 +40,64 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		if(fileCheckBoxList.size() <= 0)
 		getFileNames();
 		
+		selectAll = new JButton("   select all   ");
+		selectAll.setActionCommand("SELECTALL");
+		
+		deselectAll = new JButton("   deselect all   ");
+		deselectAll.setActionCommand("DESELECTALL");
+		
 		accept = new JButton("   accept   ");
 		accept.setActionCommand("ACCEPT");
 		
 		decline = new JButton("   decline   ");
 		decline.setActionCommand("DECLINE");
 		
+		selectAll.addActionListener(this);
+		deselectAll.addActionListener(this);
 		accept.addActionListener(this);
 		decline.addActionListener(this);
 		
-		JPanel Text = new JPanel(new GridLayout(fileCheckBoxList.size() + 2, 2));
+		JPanel Text = new JPanel(new GridLayout(fileCheckBoxList.size() + 4, 6));
+		Text.add(new JLabel());
+		Text.add(new JLabel("files"));
+		Text.add(new JLabel());
+		Text.add(new JLabel("start date"));
+		Text.add(new JLabel());
+		Text.add(new JLabel("end date"));
+		
+		for(int i = 0; i < 6; i++)
+			Text.add(new JLabel());
+		
 		for(int i = 0; i < fileCheckBoxList.size();i++){
-			Text.add(new JLabel(fileCheckBoxList.get(i).getFileName()));
 			Text.add(fileCheckBoxList.get(i).getCheckBox());
+			Text.add(new JLabel(fileCheckBoxList.get(i).getFileName()));
+			Text.add(new JLabel());
+			FileDate fileDate;
+			try {
+				fileDate = new ReadFile().main(fileCheckBoxList.get(i).getFileName());
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");  
+				Text.add(new JLabel(formatter.format(fileDate.getStart())));
+				Text.add(new JLabel());
+				Text.add(new JLabel(formatter.format(fileDate.getEnd())));
+			} catch (IOException e){}
 		}
+			
 		Text.add(new JLabel());
 		Text.add(new JLabel());
+		
+		JPanel Options = new JPanel(new GridLayout(2,2));
+		Options.add(selectAll);
+		Options.add(deselectAll);
+		Options.add(new JLabel());
+		Options.add(new JLabel());
 		
 		JPanel Buttons = new JPanel(new GridLayout(1, 2));
 		Buttons.add(accept);
 		Buttons.add(decline);
 
 		add(Text, BorderLayout.NORTH);
-		add(Buttons, BorderLayout.CENTER);
+		add(Options, BorderLayout.CENTER);
+		add(Buttons, BorderLayout.SOUTH);
 
 		setBorder(BorderFactory.createMatteBorder(25, 25, 25, 25, getBackground()));
 	}
@@ -97,6 +136,13 @@ public class FileNameSwing extends JPanel implements ActionListener{
 				e1.printStackTrace();
 			}
 		}
+		else if(Action.equals("SELECTALL")){
+			for(int i = 0; i < fileCheckBoxList.size();i++)
+				fileCheckBoxList.get(i).getCheckBox().setSelected(true);
+		}	
+		else if(Action.equals("DESELECTALL"))
+			for(int i = 0; i < fileCheckBoxList.size();i++)
+				fileCheckBoxList.get(i).getCheckBox().setSelected(false);
 		else if(Action.equals("DECLINE")){
 			frame.dispose();
 		}		
