@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,11 +18,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
+import javax.swing.UIManager;
 
 import dateToDate_Progress.file.ReadFile;
 
@@ -31,6 +30,7 @@ public class FileNameSwing extends JPanel implements ActionListener{
 	static JFrame frame;
 	JButton selectAll;
 	JButton deselectAll;
+	JButton delete;
 	JButton accept;
 	JButton decline;
 	
@@ -40,11 +40,15 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		if(fileCheckBoxList.size() <= 0)
 		getFileNames();
 		
+		
 		selectAll = new JButton("   select all   ");
 		selectAll.setActionCommand("SELECTALL");
 		
 		deselectAll = new JButton("   deselect all   ");
 		deselectAll.setActionCommand("DESELECTALL");
+		
+		delete = new JButton("   delete   ");
+		delete.setActionCommand("DELETE");
 		
 		accept = new JButton("   accept   ");
 		accept.setActionCommand("ACCEPT");
@@ -54,10 +58,11 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		
 		selectAll.addActionListener(this);
 		deselectAll.addActionListener(this);
+		delete.addActionListener(this);
 		accept.addActionListener(this);
 		decline.addActionListener(this);
 		
-		JPanel Text = new JPanel(new GridLayout(fileCheckBoxList.size() + 4, 6));
+		JPanel Text = new JPanel(new GridLayout(fileCheckBoxList.size() + 3, 6));
 		Text.add(new JLabel());
 		Text.add(new JLabel("files"));
 		Text.add(new JLabel());
@@ -91,12 +96,21 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		Options.add(new JLabel());
 		Options.add(new JLabel());
 		
-		JPanel Buttons = new JPanel(new GridLayout(1, 2));
+		JPanel Delete = new JPanel(new GridLayout(2,1));
+		Delete.add(delete);
+		Delete.add(new JPanel());
+		
+		
+		JPanel Buttons = new JPanel(new GridLayout(1, 3));
 		Buttons.add(accept);
 		Buttons.add(decline);
+		
+		final JPanel centre = new JPanel(new GridLayout(2,3));
+		centre.add(Options);
+		centre.add(Delete);
 
 		add(Text, BorderLayout.NORTH);
-		add(Options, BorderLayout.CENTER);
+		add(centre, BorderLayout.CENTER);
 		add(Buttons, BorderLayout.SOUTH);
 
 		setBorder(BorderFactory.createMatteBorder(25, 25, 25, 25, getBackground()));
@@ -143,7 +157,30 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		else if(Action.equals("DESELECTALL"))
 			for(int i = 0; i < fileCheckBoxList.size();i++)
 				fileCheckBoxList.get(i).getCheckBox().setSelected(false);
+		else if(Action.equals("DELETE")){
+			int dialogButton = JOptionPane.YES_NO_OPTION;
+			JOptionPane.setDefaultLocale(Locale.US);  
+			int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure to delete the selected files?", "Warning",dialogButton);
+			
+			if(dialogResult == 0){
+				for(int i = 0; i < fileCheckBoxList.size();i++){
+					if(fileCheckBoxList.get(i).getCheckBox().isSelected() == true){
+						String user = System.getProperty("user.name");
+						String s = user.format("C:\\Users\\%s\\Documents\\dateToDate_Progress", user);
+						s = s.replace("\\", "/");
+						File file = new File(String.format("%s/%s", s, fileCheckBoxList.get(i).getFileName()));
+						file.delete();
+					}
+				}
+			}
+			if(dialogResult == 0){
+				getFileNames();
+				frame.dispose();
+				new FileNameSwing().main();
+			}
+		}
 		else if(Action.equals("DECLINE")){
+			fileCheckBoxList = new ArrayList<FileCheckbox>();
 			frame.dispose();
 		}		
 	}
@@ -157,6 +194,7 @@ public class FileNameSwing extends JPanel implements ActionListener{
 		return fileNames;
 	}
 	private void getFileNames() {
+		fileCheckBoxList = new ArrayList();
 		String user = System.getProperty("user.name");
 		String s = user.format("C:\\Users\\%s\\Documents\\dateToDate_Progress", user);
 		s = s.replace("\\", "/");
