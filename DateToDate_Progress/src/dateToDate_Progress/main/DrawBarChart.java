@@ -25,7 +25,7 @@ public class DrawBarChart {
     	
     	String part = "% are already done";
     	String title;
-		double twoDecimals = Double.valueOf(Math.round((fileDates.get(0).getPercent())*1000)/100.0);
+		double twoDecimals = Double.valueOf(Math.round((fileDates.get(0).getPercent())*100)/100.0);
 		
     	if(fileDates.size() == 1)
     		title = part.format("%s%s at file %s", twoDecimals*100, part, fileDates.get(0).getFileName());
