@@ -87,8 +87,8 @@ public class FileNameSwing extends JPanel implements ActionListener{
 			} catch (IOException e){}
 		}
 			
-		Text.add(new JLabel());
-		Text.add(new JLabel());
+		for(int i = 0; i < 6; i++)
+			Text.add(new JLabel());
 		
 		JPanel Options = new JPanel(new GridLayout(2,2));
 		Options.add(selectAll);
