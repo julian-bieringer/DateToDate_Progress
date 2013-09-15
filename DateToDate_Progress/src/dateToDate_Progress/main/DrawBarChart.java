@@ -25,10 +25,10 @@ public class DrawBarChart {
     	
     	String part = "% are already done";
     	String title;
-		double twoDecimals = Double.valueOf(Math.round((fileDates.get(0).getPercent())*100)/100.0);
+		double twoDecimals = Double.valueOf(Math.round((fileDates.get(0).getPercent())*100*100)/100.0);
 		
     	if(fileDates.size() == 1)
-    		title = part.format("%s%s at file %s", twoDecimals*100, part, fileDates.get(0).getFileName());
+    		title = part.format("%s%s at file %s", twoDecimals, part, fileDates.get(0).getFileName());
     	else
     		title = "several files are selected";
     	
@@ -44,9 +44,9 @@ public class DrawBarChart {
         final XYChart.Series series = new XYChart.Series(); 
         for(int i = 0; i < fileDates.size();i++){
 	        series.getData().add(new XYChart.Data(100.0, "full amount of time"));
-	        twoDecimals = Double.valueOf(Math.round((fileDates.get(i).getPercent())*100)/100.0);
+	        twoDecimals = Double.valueOf(Math.round((fileDates.get(i).getPercent())*100*100)/100.0);
 	        if(fileDates.size() >= 2)
-	        	series.getData().add(new XYChart.Data(fileDates.get(i).getPercent()*100, String.format("already done [%s], %s%s", fileDates.get(i).getFileName(), twoDecimals * 100, "%")));
+	        	series.getData().add(new XYChart.Data(fileDates.get(i).getPercent()*100, String.format("already done [%s], %s%s", fileDates.get(i).getFileName(), twoDecimals, "%")));
 	        else 
 	        	series.getData().add(new XYChart.Data(fileDates.get(i).getPercent()*100, "already done"));
         }
